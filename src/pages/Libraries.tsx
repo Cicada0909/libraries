@@ -5,8 +5,10 @@ import {
   Card,
   CircularProgress,
   Grid,
+  Input,
   Typography,
 } from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 const ROWS_PER_PAGE = 12;
@@ -14,17 +16,33 @@ const ROWS_PER_PAGE = 12;
 const Libraries = () => {
   const navigate = useNavigate();
 
-  const { data, isLoading, getMoreData } = useLibraries({
+  const { data, isLoading, getMoreData, search, setSearch } = useLibraries({
     rowsPerPage: ROWS_PER_PAGE,
   });
+
+  const [tempSearch, setTempSearch] = useState(search);
 
   const goToLibraryHandler = (name: string) => {
     navigate(`/library/${name}`);
   };
 
+  const searchSubmitHandler = () => {
+    setSearch(tempSearch);
+  };
+
   return (
     data && (
       <Box sx={{ width: "90%", margin: "auto" }}>
+        <Box sx={{ display: "flex", gap: 2, marginTop: 4, marginBottom: 4 }}>
+          <Input
+            onChange={(e) => setTempSearch(e.target.value)}
+            placeholder={"Search"}
+            value={tempSearch}
+          />
+          <Button onClick={searchSubmitHandler} variant={"contained"}>
+            Find
+          </Button>
+        </Box>
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
@@ -51,10 +69,12 @@ const Libraries = () => {
         </Grid>
         {isLoading ? (
           <CircularProgress />
-        ) : (
+        ) : data?.available ? (
           <Button sx={{ marginTop: 2 }} onClick={getMoreData}>
             Load more
           </Button>
+        ) : (
+          <Typography>Not found</Typography>
         )}
       </Box>
     )

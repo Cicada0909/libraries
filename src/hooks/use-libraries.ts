@@ -10,15 +10,17 @@ interface Props {
 const useLibraries = ({ rowsPerPage }: Props) => {
   const [limit, setLimit] = useState(rowsPerPage);
 
+  const [search, setSearch] = useState("");
+
   const fields =
     "filename, description, version, keywords, alternativeNames, fileType, github, objectID, license, homepage, repository, author, originalName, sri";
 
   const { error, data, isLoading } = useQuery<LibraryListPaginatedInterface>({
-    queryKey: ["libraries", limit],
+    queryKey: ["libraries", limit, search],
     queryFn: () =>
-      fetch(`${LIBRARIES_API}?limit=${limit}&fields=${fields}`).then((res) =>
-        res.json(),
-      ),
+      fetch(
+        `${LIBRARIES_API}?limit=${limit}&fields=${fields}${search.length ? `&search=${search}` : ""}`,
+      ).then((res) => res.json()),
     placeholderData: (prev) => prev,
   });
 
@@ -29,6 +31,8 @@ const useLibraries = ({ rowsPerPage }: Props) => {
     error,
     data,
     getMoreData,
+    setSearch,
+    search,
   };
 };
 
