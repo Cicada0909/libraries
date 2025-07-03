@@ -7,7 +7,7 @@ export const Routing = () => {
     <BrowserRouter>
       <Routes>
         <Route index={true} element={<Libraries />} />
-        <Route path="/library/:id" element={<Library />} />
+        <Route path="/library/:name" element={<Library />} />
       </Routes>
     </BrowserRouter>
   );
