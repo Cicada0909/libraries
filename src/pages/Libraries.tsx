@@ -10,17 +10,26 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SearchFieldsModal from "../components/SearchFieldsModal.tsx";
 
 const ROWS_PER_PAGE = 12;
 
 const Libraries = () => {
   const navigate = useNavigate();
-
-  const { data, isLoading, getMoreData, search, setSearch } = useLibraries({
+  const {
+    data,
+    isLoading,
+    getMoreData,
+    search,
+    setSearch,
+    searchFields,
+    setSearchFields,
+  } = useLibraries({
     rowsPerPage: ROWS_PER_PAGE,
   });
 
   const [tempSearch, setTempSearch] = useState(search);
+  const [open, setOpen] = useState(false);
 
   const goToLibraryHandler = (name: string) => {
     navigate(`/library/${name}`);
@@ -33,13 +42,30 @@ const Libraries = () => {
   return (
     data && (
       <Box sx={{ width: "90%", margin: "auto" }}>
-        <Box sx={{ display: "flex", gap: 2, marginTop: 4, marginBottom: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            marginTop: 4,
+            marginBottom: 4,
+            alignItems: "center",
+          }}
+        >
+          <Button variant="outlined" onClick={() => setOpen(true)}>
+            Filters
+          </Button>
+          <SearchFieldsModal
+            open={open}
+            onClose={() => setOpen(false)}
+            searchFields={searchFields}
+            setSearchFields={setSearchFields}
+          />
           <Input
             onChange={(e) => setTempSearch(e.target.value)}
-            placeholder={"Search"}
+            placeholder="Search"
             value={tempSearch}
           />
-          <Button onClick={searchSubmitHandler} variant={"contained"}>
+          <Button onClick={searchSubmitHandler} variant="contained">
             Find
           </Button>
         </Box>
@@ -57,8 +83,8 @@ const Libraries = () => {
                 </Box>
                 <Button
                   sx={{ marginTop: 3 }}
-                  size={"small"}
-                  variant={"contained"}
+                  size="small"
+                  variant="contained"
                   onClick={() => goToLibraryHandler(library.name)}
                 >
                   More information

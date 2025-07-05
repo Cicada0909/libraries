@@ -9,18 +9,27 @@ interface Props {
 
 const useLibraries = ({ rowsPerPage }: Props) => {
   const [limit, setLimit] = useState(rowsPerPage);
-
   const [search, setSearch] = useState("");
+  const [searchFields, setSearchFields] = useState<string[]>([]);
 
   const fields =
-    "filename, description, version, keywords, alternativeNames, fileType, github, objectID, license, homepage, repository, author, originalName, sri";
+    "filename,description,version,keywords,alternativeNames,fileType,github,objectID,license,homepage,repository,author,originalName,sri";
+
+  const queryParams = [
+    `limit=${limit}`,
+    `fields=${fields}`,
+    `search=${encodeURIComponent(search)}`,
+    search.trim() && searchFields.length
+      ? `search_fields=${encodeURIComponent(searchFields.join(","))}`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("&");
 
   const { error, data, isLoading } = useQuery<LibraryListPaginatedInterface>({
-    queryKey: ["libraries", limit, search],
+    queryKey: ["libraries", limit, search, searchFields],
     queryFn: () =>
-      fetch(
-        `${LIBRARIES_API}?limit=${limit}&fields=${fields}${search.length ? `&search=${search}` : ""}`,
-      ).then((res) => res.json()),
+      fetch(`${LIBRARIES_API}?${queryParams}`).then((res) => res.json()),
     placeholderData: (prev) => prev,
   });
 
@@ -33,6 +42,8 @@ const useLibraries = ({ rowsPerPage }: Props) => {
     getMoreData,
     setSearch,
     search,
+    setSearchFields,
+    searchFields,
   };
 };
 
