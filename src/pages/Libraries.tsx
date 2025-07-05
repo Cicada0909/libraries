@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchFieldsModal from "../components/SearchFieldsModal.tsx";
+import TuneIcon from "@mui/icons-material/Tune";
 
 const ROWS_PER_PAGE = 12;
 
@@ -52,8 +53,9 @@ const Libraries = () => {
           }}
         >
           <Button variant="outlined" onClick={() => setOpen(true)}>
-            Filters
+            <TuneIcon />
           </Button>
+
           <SearchFieldsModal
             open={open}
             onClose={() => setOpen(false)}
@@ -65,43 +67,61 @@ const Libraries = () => {
             placeholder="Search"
             value={tempSearch}
           />
-          <Button onClick={searchSubmitHandler} variant="contained">
+          <Button
+            onClick={searchSubmitHandler}
+            variant="contained"
+            sx={{ width: "6.5rem" }}
+          >
             Find
           </Button>
         </Box>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 1, sm: 8, md: 12 }}
-        >
-          {data?.results.map((library, index) => (
-            <Grid key={index} size={{ xs: 1, sm: 4, md: 4 }}>
-              <Card sx={{ padding: 2 }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography>{library.name}</Typography>
-                  <Typography>v{library.version}</Typography>
-                </Box>
-                <Button
-                  sx={{ marginTop: 3 }}
-                  size="small"
-                  variant="contained"
-                  onClick={() => goToLibraryHandler(library.name)}
-                >
-                  More information
+        <Box>
+          {isLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : data?.results?.length ? (
+            <>
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 1, sm: 8, md: 12 }}
+              >
+                {data.results.map((library, index) => (
+                  <Grid key={index} size={{ xs: 1, sm: 4, md: 4 }}>
+                    <Card sx={{ padding: 2 }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography>{library.name}</Typography>
+                        <Typography>v{library.version}</Typography>
+                      </Box>
+                      <Button
+                        sx={{ marginTop: 3 }}
+                        size="small"
+                        variant="contained"
+                        onClick={() => goToLibraryHandler(library.name)}
+                      >
+                        More information
+                      </Button>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+
+              {data.available > data.results.length && (
+                <Button sx={{ marginTop: 2 }} onClick={getMoreData}>
+                  Load more
                 </Button>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-        {isLoading ? (
-          <CircularProgress />
-        ) : data?.available ? (
-          <Button sx={{ marginTop: 2 }} onClick={getMoreData}>
-            Load more
-          </Button>
-        ) : (
-          <Typography>Not found</Typography>
-        )}
+              )}
+            </>
+          ) : (
+            <Typography>Not found</Typography>
+          )}
+        </Box>
       </Box>
     )
   );

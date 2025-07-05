@@ -26,17 +26,23 @@ const useLibraries = ({ rowsPerPage }: Props) => {
     .filter(Boolean)
     .join("&");
 
-  const { error, data, isLoading } = useQuery<LibraryListPaginatedInterface>({
-    queryKey: ["libraries", limit, search, searchFields],
-    queryFn: () =>
-      fetch(`${LIBRARIES_API}?${queryParams}`).then((res) => res.json()),
-    placeholderData: (prev) => prev,
-  });
+  const { error, data, isFetching, isLoading } =
+    useQuery<LibraryListPaginatedInterface>({
+      queryKey: ["libraries", limit, search, searchFields],
+      queryFn: () =>
+        fetch(`${LIBRARIES_API}?${queryParams}`).then((res) => res.json()),
+      placeholderData: (prev) => prev,
+    });
+
+  console.log(limit);
+  console.log(search);
+
+  const isSearchLoading = search ? isFetching : isLoading;
 
   const getMoreData = () => setLimit((prev) => prev + rowsPerPage);
 
   return {
-    isLoading,
+    isLoading: isSearchLoading,
     error,
     data,
     getMoreData,

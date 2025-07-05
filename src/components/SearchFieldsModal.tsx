@@ -1,11 +1,11 @@
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   Modal,
   Typography,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface SearchFieldsModalProps {
   open: boolean;
@@ -54,7 +54,17 @@ const SearchFieldsModal = ({
           borderRadius: 2,
         }}
       >
-        <Typography variant="h6" mb={2}>
+        <CloseIcon
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            top: 13,
+            right: 13,
+            cursor: "pointer",
+            color: "text.secondary",
+          }}
+        />
+        <Typography variant="h6" mb={2} mt={2}>
           Select search filters
         </Typography>
         <Box
@@ -77,9 +87,6 @@ const SearchFieldsModal = ({
             />
           ))}
         </Box>
-        <Button sx={{ mt: 2 }} variant="contained" onClick={onClose}>
-          Apply
-        </Button>
       </Box>
     </Modal>
   );
