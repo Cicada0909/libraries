@@ -7,11 +7,13 @@ import {
   Grid,
   Input,
   Typography,
+  Fade,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchFieldsModal from "../components/SearchFieldsModal.tsx";
 import TuneIcon from "@mui/icons-material/Tune";
+import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 
 const ROWS_PER_PAGE = 12;
 
@@ -49,7 +51,7 @@ const Libraries = () => {
             gap: 2,
             marginTop: 4,
             marginBottom: 4,
-            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Button variant="outlined" onClick={() => setOpen(true)}>
@@ -81,7 +83,14 @@ const Libraries = () => {
               <CircularProgress />
             </Box>
           ) : data?.results?.length ? (
-            <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
+                alignItems: "center",
+              }}
+            >
               <Grid
                 container
                 spacing={{ xs: 2, md: 3 }}
@@ -89,37 +98,46 @@ const Libraries = () => {
               >
                 {data.results.map((library, index) => (
                   <Grid key={index} size={{ xs: 1, sm: 4, md: 4 }}>
-                    <Card sx={{ padding: 2 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Typography>{library.name}</Typography>
-                        <Typography>v{library.version}</Typography>
-                      </Box>
-                      <Button
-                        sx={{ marginTop: 3 }}
-                        size="small"
-                        variant="contained"
-                        onClick={() => goToLibraryHandler(library.name)}
-                      >
-                        More information
-                      </Button>
-                    </Card>
+                    <Fade in timeout={200 + index * 100}>
+                      <Card sx={{ padding: 2 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Typography fontWeight={500}>
+                            {library.name}
+                          </Typography>
+                          <Typography>v{library.version}</Typography>
+                        </Box>
+                        <Button
+                          sx={{ marginTop: 3 }}
+                          size="small"
+                          variant="contained"
+                          onClick={() => goToLibraryHandler(library.name)}
+                        >
+                          More information
+                        </Button>
+                      </Card>
+                    </Fade>
                   </Grid>
                 ))}
               </Grid>
 
               {data.available > data.results.length && (
-                <Button sx={{ marginTop: 2 }} onClick={getMoreData}>
+                <Button sx={{ mb: 2 }} onClick={getMoreData}>
                   Load more
                 </Button>
               )}
-            </>
+            </Box>
           ) : (
-            <Typography>Not found</Typography>
+            <Box
+              sx={{ display: "flex", justifyContent: "center", mt: 5, gap: 1 }}
+            >
+              <PlaylistRemoveIcon />
+              <Typography>Not found</Typography>
+            </Box>
           )}
         </Box>
       </Box>

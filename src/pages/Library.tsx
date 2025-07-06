@@ -7,27 +7,29 @@ import {
   CircularProgress,
   Link,
   Typography,
+  Fade,
+  Divider,
+  Chip,
 } from "@mui/material";
 
 const Library = () => {
   const { name } = useParams<{ name: string }>();
   const navigate = useNavigate();
-
   const { data, isLoading } = useLibrary({ name });
 
   return (
     <Box
       sx={{
         width: "90%",
+        maxWidth: 1000,
         margin: "auto",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
         padding: 4,
       }}
     >
       {isLoading ? (
-        <CircularProgress sx={{ margin: "auto" }} />
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 6 }}>
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           <Button
@@ -36,36 +38,59 @@ const Library = () => {
           >
             Go back
           </Button>
-          <Card
-            sx={{
-              padding: 2,
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Link underline={"none"} href={data?.homepage} target={"_blank"}>
-                <Typography
-                  sx={{ fontSize: 20, fontWeight: 500 }}
-                  variant={"h1"}
-                >
-                  {data?.name}
+
+          <Fade in timeout={300}>
+            <Card
+              sx={{
+                padding: 3,
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Link underline="hover" href={data?.homepage} target="_blank">
+                  <Typography variant="h5" fontWeight={600}>
+                    {data?.name}
+                  </Typography>
+                </Link>
+                <Typography sx={{ fontSize: 16 }}>v{data?.version}</Typography>
+              </Box>
+
+              <Divider />
+              {data?.description && (
+                <Typography color="text.secondary">
+                  {data.description}
                 </Typography>
-              </Link>
-              <Typography sx={{ fontSize: 16 }} variant={"h5"}>
-                v{data?.version}
-              </Typography>
-            </Box>
-            <Typography variant={"caption"}>
-              Description: {data?.description}
-            </Typography>
-            <Typography variant={"caption"}>
-              Keywords: {data?.keywords.join(", ")}
-            </Typography>
-            <Typography variant={"caption"}>Author: {data?.author}</Typography>
-          </Card>
+              )}
+              {(data?.keywords?.length ?? 0) > 0 && (
+                <Box>
+                  <Typography fontWeight={500} gutterBottom>
+                    Keywords:
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    {data?.keywords?.map((kw, idx) => (
+                      <Chip key={idx} label={kw} size="small" />
+                    ))}
+                  </Box>
+                </Box>
+              )}
+              {data?.author && (
+                <Box sx={{ display: "flex", gap: 0.5 }}>
+                  <Typography fontWeight={500} gutterBottom>
+                    Author:
+                  </Typography>
+                  <Typography>{data.author}</Typography>
+                </Box>
+              )}
+            </Card>
+          </Fade>
         </>
       )}
     </Box>
