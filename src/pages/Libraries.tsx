@@ -66,6 +66,11 @@ const Libraries = () => {
           />
           <Input
             onChange={(e) => setTempSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                searchSubmitHandler();
+              }
+            }}
             placeholder="Search"
             value={tempSearch}
           />
@@ -83,14 +88,7 @@ const Libraries = () => {
               <CircularProgress />
             </Box>
           ) : data?.results?.length ? (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 3,
-                alignItems: "center",
-              }}
-            >
+            <>
               <Grid
                 container
                 spacing={{ xs: 2, md: 3 }}
@@ -98,7 +96,7 @@ const Libraries = () => {
               >
                 {data.results.map((library, index) => (
                   <Grid key={index} size={{ xs: 1, sm: 4, md: 4 }}>
-                    <Fade in timeout={200 + index * 100}>
+                    <Fade in timeout={700}>
                       <Card sx={{ padding: 2 }}>
                         <Box
                           sx={{
@@ -126,11 +124,18 @@ const Libraries = () => {
               </Grid>
 
               {data.available > data.results.length && (
-                <Button sx={{ mb: 2 }} onClick={getMoreData}>
-                  Load more
-                </Button>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 3,
+                    mb: 2,
+                  }}
+                >
+                  <Button onClick={getMoreData}>Load more</Button>
+                </Box>
               )}
-            </Box>
+            </>
           ) : (
             <Box
               sx={{ display: "flex", justifyContent: "center", mt: 5, gap: 1 }}
