@@ -34,9 +34,6 @@ const useLibraries = ({ rowsPerPage }: Props) => {
       placeholderData: (prev) => prev,
     });
 
-  console.log(limit);
-  console.log(search);
-
   const isSearchLoading = search ? isFetching : isLoading;
 
   const getMoreData = () => setLimit((prev) => prev + rowsPerPage);

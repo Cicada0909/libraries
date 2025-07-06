@@ -2,18 +2,17 @@ import useLibraries from "../hooks/use-libraries.ts";
 import {
   Box,
   Button,
-  Card,
   CircularProgress,
   Grid,
   Input,
   Typography,
-  Fade,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchFieldsModal from "../components/SearchFieldsModal.tsx";
 import TuneIcon from "@mui/icons-material/Tune";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
+import LibraryListItem from "../components/LibraryListItem.tsx";
 
 const ROWS_PER_PAGE = 12;
 
@@ -95,31 +94,11 @@ const Libraries = () => {
                 columns={{ xs: 1, sm: 8, md: 12 }}
               >
                 {data.results.map((library, index) => (
-                  <Grid key={index} size={{ xs: 1, sm: 4, md: 4 }}>
-                    <Fade in timeout={700}>
-                      <Card sx={{ padding: 2 }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Typography fontWeight={500}>
-                            {library.name}
-                          </Typography>
-                          <Typography>v{library.version}</Typography>
-                        </Box>
-                        <Button
-                          sx={{ marginTop: 3 }}
-                          size="small"
-                          variant="contained"
-                          onClick={() => goToLibraryHandler(library.name)}
-                        >
-                          More information
-                        </Button>
-                      </Card>
-                    </Fade>
-                  </Grid>
+                  <LibraryListItem
+                    key={index}
+                    library={library}
+                    goToLibraryHandler={goToLibraryHandler}
+                  />
                 ))}
               </Grid>
 
